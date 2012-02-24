@@ -301,8 +301,8 @@
 		14F885D414F41789003F97FC /* nimbus-boilerplate */ = {
 			isa = PBXGroup;
 			children = (
-				14F7F91C14F4E54700939A7D /* StateViewController */,
 				14F7F85814F4DD8400939A7D /* Nimbus */,
+				14F7F91C14F4E54700939A7D /* StateViewController */,
 				14F885D514F41789003F97FC /* Supporting Files */,
 			);
 			path = "nimbus-boilerplate";
@@ -510,7 +510,10 @@
 				DSTROOT = /tmp/nimbus_boilerplate.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "nimbus-boilerplate/nimbus-boilerplate-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "nimbus-boilerplate-no-nimbus";
 				SKIP_INSTALL = YES;
 			};
@@ -522,7 +525,10 @@
 				DSTROOT = /tmp/nimbus_boilerplate.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "nimbus-boilerplate/nimbus-boilerplate-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
 				PRODUCT_NAME = "nimbus-boilerplate-no-nimbus";
 				SKIP_INSTALL = YES;
 			};

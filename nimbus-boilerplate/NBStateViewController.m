@@ -20,7 +20,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    self.state = NBViewControllerStateNormal;
+    self.state = NBViewControllerStateLoading;
 }
 
 - (void)viewDidLoad {
