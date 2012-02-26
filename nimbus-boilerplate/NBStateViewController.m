@@ -17,16 +17,11 @@
 
 @synthesize state = _state, error = _error;
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    self.state = NBViewControllerStateLoading;
-}
-
 - (void)viewDidLoad {
     _loadingView = nil;
     _emptyView = nil;
     _errorView = nil;
+    self.state = NBViewControllerStateNormal;
 }
 
 - (void)setState:(NBViewControllerState)state {
