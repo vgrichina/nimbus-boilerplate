@@ -21,6 +21,7 @@
     _loadingView = nil;
     _emptyView = nil;
     _errorView = nil;
+
     self.state = NBViewControllerStateNormal;
 }
 

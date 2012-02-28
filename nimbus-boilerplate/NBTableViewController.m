@@ -61,4 +61,33 @@
     return _tableView;
 }
 
+// Set default background
+
+- (UIView *)loadingView {
+    if (!_loadingView) {
+        _loadingView = [super loadingView];
+        _loadingView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        [self.view addSubview:_loadingView];
+    }
+    return _loadingView;
+}
+
+- (UIView *)emptyView {
+    if (!_emptyView) {
+        _emptyView = [super emptyView];
+        _emptyView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        [self.view addSubview:_emptyView];
+    }
+    return _emptyView;
+}
+
+- (UIView<NBErrorView> *)errorView {
+    if (!_errorView) {
+        _errorView = [super errorView];
+        _errorView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        [self.view addSubview:_errorView];
+    }
+    return _errorView;
+}
+
 @end

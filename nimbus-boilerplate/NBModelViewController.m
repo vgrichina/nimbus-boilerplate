@@ -13,8 +13,8 @@
 
 @synthesize model = _model;
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidLoad {
+    [super viewDidLoad];
 
     [self reload];
 }
@@ -43,7 +43,7 @@
         NSLog(@"%@", error);
         [viewController didFailLoadingWithError];
     };
-    [reloadOperation start];
+    [reloadOperation performSelectorInBackground:@selector(start) withObject:nil];
 }
 
 - (NIOperation *)createReloadOperation {
