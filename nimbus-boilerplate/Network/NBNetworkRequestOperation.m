@@ -30,7 +30,7 @@
     [super dealloc];
 }
 
-- (void)finish {    
+- (void)finish {
     [_connection release];
     _connection = nil;
     

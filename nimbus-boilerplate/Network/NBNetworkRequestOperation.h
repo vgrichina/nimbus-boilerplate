@@ -26,4 +26,6 @@
 @property (nonatomic, retain, readonly) NSHTTPURLResponse *response;
 @property (nonatomic, retain, readonly) NSData *data;
 
+- (void)finish;
+
 @end
