@@ -66,6 +66,32 @@
     return [NSString stringWithFormat:@"%d", photoIndex];
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)getImageFromData: (NSData*)data
+               photoSize: (NIPhotoScrollViewPhotoSize)photoSize
+              photoIndex: (NSInteger)photoIndex {
+    BOOL isThumbnail = (NIPhotoScrollViewPhotoSizeThumbnail == photoSize);
+    UIImage *image = [UIImage imageWithData: data];
+    
+    NSString* photoIndexKey = [self cacheKeyForPhotoIndex:photoIndex];
+    
+    if (isThumbnail) {
+        [_thumbnailImageCache storeObject: image
+                                 withName: photoIndexKey];
+        
+    } else {
+        [_highQualityImageCache storeObject: image
+                                   withName: photoIndexKey];
+    }
+    
+    [self.photoAlbumView didLoadPhoto: image
+                              atIndex: photoIndex
+                            photoSize: photoSize];
+    
+    if (isThumbnail) {
+        [self.photoScrubberView didLoadThumbnail:image atIndex:photoIndex];
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)requestImageFromSource: (NSString *)source
@@ -153,10 +179,17 @@
 
         // Don't load the thumbnail if it's already in memory.
         if (![self.thumbnailImageCache containsObjectWithName:photoIndexKey]) {
-            NSString* source = [photo valueForKey:@"thumbnailSource"];
-            [self requestImageFromSource: source
-                               photoSize: NIPhotoScrollViewPhotoSizeThumbnail
-                              photoIndex: ix];
+            // If NSData provided so we don't need to load it from network
+            if ([photo valueForKey:@"thumbnailData"]) {
+                [self getImageFromData: [photo valueForKey:@"thumbnailData"]
+                             photoSize: NIPhotoScrollViewPhotoSizeThumbnail
+                            photoIndex: ix];
+            } else {
+                NSString* source = [photo valueForKey:@"thumbnailSource"];
+                [self requestImageFromSource: source
+                                   photoSize: NIPhotoScrollViewPhotoSizeThumbnail
+                                  photoIndex: ix];
+            }
         }
     }
 }
@@ -192,10 +225,18 @@
     if (nil == image) {
         NSDictionary* photo = [self.photoInformation objectAtIndex:thumbnailIndex];
 
-        NSString* thumbnailSource = [photo valueForKey:@"thumbnailSource"];
-        [self requestImageFromSource: thumbnailSource
-                           photoSize: NIPhotoScrollViewPhotoSizeThumbnail
-                          photoIndex: thumbnailIndex];
+        // If NSData provided so we don't need to load it from network
+        if ([photo valueForKey:@"thumbnailData"]) {
+            [self getImageFromData: [photo valueForKey:@"thumbnailData"]
+                         photoSize: NIPhotoScrollViewPhotoSizeThumbnail
+                        photoIndex: thumbnailIndex];
+            image = [self.thumbnailImageCache objectWithName:photoIndexKey];
+        } else {
+            NSString* thumbnailSource = [photo valueForKey:@"thumbnailSource"];
+            [self requestImageFromSource: thumbnailSource
+                               photoSize: NIPhotoScrollViewPhotoSizeThumbnail
+                              photoIndex: thumbnailIndex];
+        }
     }
 
     return image;
@@ -234,12 +275,22 @@
         *photoSize = NIPhotoScrollViewPhotoSizeOriginal;
 
     } else {
-        NSString* source = [photo valueForKey:@"originalSource"];
-        [self requestImageFromSource: source
-                           photoSize: NIPhotoScrollViewPhotoSizeOriginal
-                          photoIndex: photoIndex];
-
-        *isLoading = YES;
+        // If NSData provided so we don't need to load it from network
+        if ([photo valueForKey:@"originalData"]) {
+            [self getImageFromData: [photo valueForKey:@"originalData"]
+                         photoSize: NIPhotoScrollViewPhotoSizeOriginal
+                        photoIndex: photoIndex];
+            image = [self.highQualityImageCache objectWithName:photoIndexKey];
+            *photoSize = NIPhotoScrollViewPhotoSizeOriginal;
+            *isLoading = NO;
+            return image;
+        } else {
+            NSString* source = [photo valueForKey:@"originalSource"];
+            [self requestImageFromSource: source
+                               photoSize: NIPhotoScrollViewPhotoSizeOriginal
+                              photoIndex: photoIndex];
+            *isLoading = YES;
+        }
 
         // Try to return the thumbnail image if we can.
         image = [self.thumbnailImageCache objectWithName:photoIndexKey];
@@ -248,11 +299,23 @@
 
         } else {
             // Load the thumbnail as well.
-            NSString* thumbnailSource = [photo valueForKey:@"thumbnailSource"];
-            [self requestImageFromSource: thumbnailSource
-                               photoSize: NIPhotoScrollViewPhotoSizeThumbnail
-                              photoIndex: photoIndex];
-
+            
+            // If NSData provided so we don't need to load it from network
+            if ([photo valueForKey:@"thumbnailData"]) {
+                [self getImageFromData: [photo valueForKey:@"thumbnailData"]
+                             photoSize: NIPhotoScrollViewPhotoSizeThumbnail
+                            photoIndex: photoIndex];
+                if (!image) {
+                    image = [self.thumbnailImageCache objectWithName:photoIndexKey];
+                    *photoSize = NIPhotoScrollViewPhotoSizeThumbnail;
+                }
+            } else {
+                NSString* thumbnailSource = [photo valueForKey:@"thumbnailSource"];
+                [self requestImageFromSource: thumbnailSource
+                                   photoSize: NIPhotoScrollViewPhotoSizeThumbnail
+                                  photoIndex: photoIndex];
+                *isLoading = YES;
+            }
         }
     }
 
