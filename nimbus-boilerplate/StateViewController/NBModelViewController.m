@@ -40,7 +40,6 @@
     };
     reloadOperation.didFailWithErrorBlock = ^void(NIOperation *operation, NSError *error) {
         viewController.error = error;
-        NSLog(@"%@", error);
         [viewController didFailLoadingWithError];
     };
     [reloadOperation performSelectorInBackground:@selector(start) withObject:nil];
