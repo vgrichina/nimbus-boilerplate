@@ -83,6 +83,13 @@
 - (void)requestImageFromSource: (NSString *)source
                      photoSize: (NIPhotoScrollViewPhotoSize)photoSize
                     photoIndex: (NSInteger)photoIndex;
+/**
+ * Load image from NSData, similar to requestImageFromSource
+ */
+- (void)getImageFromData: (NSData*)data
+               photoSize: (NIPhotoScrollViewPhotoSize)photoSize
+              photoIndex: (NSInteger)photoIndex;
+
 
 - (void)reload;
 
