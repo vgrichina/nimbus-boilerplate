@@ -26,7 +26,7 @@
     self.error = nil;
     [self didStartLoading];
 
-    NBModelViewController *viewController = self;
+    __block NBModelViewController *viewController = self;
     NIOperation *reloadOperation = [self createReloadOperation];
     reloadOperation.didFinishBlock = ^void(NIOperation *operation) {
         [viewController createModelWithOperationResults:operation];

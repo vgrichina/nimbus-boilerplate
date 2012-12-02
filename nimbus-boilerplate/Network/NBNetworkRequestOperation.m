@@ -54,7 +54,7 @@
     _isExecuting = YES;
     [self didChangeValueForKey:@"isExecuting"];
 
-    [self operationDidStart];
+    [self didStart];
 
     _connection = [[NSURLConnection alloc] initWithRequest:self.request
                                                   delegate:self];
@@ -89,7 +89,7 @@
 - (void)connection:(NSURLConnection *)connection
   didFailWithError:(NSError *)error {
     [self finish];
-    [self operationDidFailWithError:error];
+    [self didFailWithError:error];
 }
 
 #pragma  mark - NSURLConnectionDataDelegate
@@ -110,8 +110,8 @@ didReceiveResponse:(NSURLResponse *)response {
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [self finish];
-    [self operationWillFinish];
-    [self operationDidFinish];
+    [self willFinish];
+    [self didFinish];
 }
 
 @end
